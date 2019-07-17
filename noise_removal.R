@@ -43,3 +43,5 @@ pathabund.filter2 <- lapply(pathabund.filter, function(x){
   y <- y[!rownames(y) %in% c("UNMAPPED","UNINTEGRATED"),]
 })
 lapply(pathabund.filter2, dim)
+
+save(crc.abund.s.filter, pathabund.filter2, file = "filterdata.Rdata")
