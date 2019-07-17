@@ -19,20 +19,6 @@ spe.wt.list.spe <- lapply(spe.wt.list, function(x){y <- subset(x, p.value<0.05)$
 spe.wt.list.spe.vector <- Reduce(c, spe.wt.list.spe)
 spe.wt.list.spe.vector <- unique(spe.wt.list.spe.vector)
 
-spe.wt.data <- lapply(crc.abund.s.filter, function(x){
-  y <- x[spe.wt.list.spe.vector, ];
-  y[is.na(y)] <- 0;
-  rownames(y) <- spe.wt.list.spe.vector;
-  return(y)
-})
-
-spe.hdc.data <- lapply(crc.abund.s.filter, function(x){
-  y <- x[sig.spe.vector, ];
-  y[is.na(y)] <- 0;
-  rownames(y) <- sig.spe.vector;
-  return(y)
-})
-
 pathabund.wt.list <- list()
 for (project in names(pathabund.filter2)) {
   x <- pathabund.filter2[[project]]
@@ -52,20 +38,6 @@ pathabund.wt.list.path <- lapply(pathabund.wt.list, function(x){y <- subset(x, p
 pathabund.wt.list.path.vector <- Reduce(c, pathabund.wt.list.path)
 pathabund.wt.list.path.vector  <- unique(pathabund.wt.list.path.vector )
 
-path.wt.data <- lapply(pathabund.filter2, function(x){
-  y <- x[pathabund.wt.list.path.vector, ];
-  y[is.na(y)] <- 0;
-  rownames(y) <- pathabund.wt.list.path.vector;
-  return(y)
-})
-
-path.hdc.data <- lapply(pathabund.filter2, function(x){
-  y <- x[sig.path.vector, ];
-  y[is.na(y)] <- 0;
-  rownames(y) <- sig.path.vector;
-  return(y)
-})
-
 ## -----
 all.features <- lapply(crc.abund.s.filter, rownames)
 all.features.vector <- unique(Reduce(c, all.features))
@@ -75,6 +47,7 @@ spe.data <- lapply(crc.abund.s.filter, function(x){
   rownames(y) <- all.features.vector;
   return(y)
 })
+spe.data.df <- spe.data %>% reduce(cbind)
 
 all.features <- lapply(pathabund.filter2, rownames)
 all.features.vector <- unique(Reduce(c, all.features))
@@ -84,12 +57,10 @@ pathways.data <- lapply(pathabund.filter2, function(x){
   rownames(y) <- all.features.vector;
   return(y)
 })
+pathways.data.df <- pathways.data %>% reduce(cbind)
 
-
-data.list <- list(spe.data = spe.data,
-                  pathways.data  = pathways.data ,
-                  spe.wt.data = spe.wt.data,
-                  spe.hdc.data = spe.hdc.data,
-                  path.wt.data = path.wt.data,
-                  path.hdc.data = path.hdc.data)
+data.list <- list(spe.data.df = spe.data.df,
+                  pathways.data.df = pathways.data.df  ,
+                  spe.wt.list.spe.vector = spe.wt.list.spe.vector,
+                  pathabund.wt.list.path.vector = pathabund.wt.list.path.vector)
 save(data.list, file = "data.Rdata")
