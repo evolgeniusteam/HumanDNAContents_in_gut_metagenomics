@@ -135,3 +135,5 @@ sig.spe.vector <- unique(sig.spe.vector)
 sig.path <- lapply(pathabund.sig.list, rownames)
 sig.path.vector <- Reduce(c, sig.path)
 sig.path.vector <- unique(sig.path.vector)
+
+save(sig.spe.vector, all.CRC.cor.sig, sig.path.vector, pathabund.cor.sig, file = "sigfeatures.Rdata")
