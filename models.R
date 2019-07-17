@@ -9,6 +9,9 @@ load("sigfeatures.Rdata")
 crc.meta <- read.delim("allCRC_metadata.txt", header = T, sep = "\t",as.is = T)
 rownames(crc.meta) <- crc.meta$Sample_ID
 
+spe.data.df["HDC",] <- crc.meta[names(spe.data.df), "HDC"]
+path.data.df["HDC",] <- crc.meta[names(path.data.df), "HDC"]
+
 repeat.rf.func <- function(feat.data, meta.data,num.folds = 10,num.resample = 10){
   ##it is not necessary to normalize feat.data when using randomforest model
   ##feat.data is relative abundance (sums = 1)
