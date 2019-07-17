@@ -2,12 +2,12 @@
 library(SIAMCAT)
 library(dplyr)
 library(pROC)
+library(doParallel)
 
 load("data.Rdata")
+load("sigfeatures.Rdata")
 crc.meta <- read.delim("allCRC_metadata.txt", header = T, sep = "\t",as.is = T)
 rownames(crc.meta) <- crc.meta$Sample_ID
-
-data.list.df <- lapply(data.list, function(data){ y <- data %>% reduce(cbind); return(y) })
 
 repeat.rf.func <- function(feat.data, meta.data,num.folds = 10,num.resample = 10){
   ##it is not necessary to normalize feat.data when using randomforest model
@@ -58,3 +58,22 @@ lodo.models <- function(project, metadata = metadata, rl.data = rl.data){
   models <- repeat.rf.func(feat.train, meta.train)
   return(models)
 }
+
+## ----- it would spend several days on modelling ----- ##
+## ----- advise: Parallel Computing -----##
+## ----- example -----##
+cl <- makeCluster(7)
+registerDoParallel(cl)
+study <- unique(crc.meta$Project)
+all.spe.cross <- foreach(project = study) %dopar% cross.models(project = project, metadata=crc.meta, rl.data = spe.data.df)
+all.spe.lodo <- foreach(project = study) %dopar% lodo.models(project = project, metadata=crc.meta, rl.data = spe.data.df)
+stopCluster(cl)
+
+## ----- example ---------##
+cl <- makeCluster(7)
+registerDoParallel(cl)
+study <- unique(crc.meta$Project)
+spe.wt.data.df <- spe.data.df[spe.wt.list.spe.vector,]
+wt.spe.cross <- foreach(project = study) %dopar% cross.models(project = project, metadata=crc.meta, rl.data = spe.wt.data.df )
+wt.spe.lodo <- foreach(project = study) %dopar% lodo.models(project = project, metadata=crc.meta, rl.data = spe.wt.data.df )
+stopCluster(cl)
