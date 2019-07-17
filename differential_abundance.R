@@ -66,8 +66,28 @@ path.hdc.data <- lapply(pathabund.filter2, function(x){
   return(y)
 })
 
-data.list <- list(crc.abund.s.filter = crc.abund.s.filter,
-                  pathabund.filter2 = pathabund.filter2,
+## -----
+all.features <- lapply(crc.abund.s.filter, rownames)
+all.features.vector <- unique(Reduce(c, all.features))
+spe.data <- lapply(crc.abund.s.filter, function(x){
+  y <- x[all.features.vector,]
+  y[is.na(y)] <- 0;
+  rownames(y) <- all.features.vector;
+  return(y)
+})
+
+all.features <- lapply(pathabund.filter2, rownames)
+all.features.vector <- unique(Reduce(c, all.features))
+pathways.data <- lapply(pathabund.filter2, function(x){
+  y <- x[all.features.vector,]
+  y[is.na(y)] <- 0;
+  rownames(y) <- all.features.vector;
+  return(y)
+})
+
+
+data.list <- list(spe.data = spe.data,
+                  pathways.data  = pathways.data ,
                   spe.wt.data = spe.wt.data,
                   spe.hdc.data = spe.hdc.data,
                   path.wt.data = path.wt.data,
