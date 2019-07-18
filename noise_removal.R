@@ -4,8 +4,7 @@ crc.meta$HDC <- crc.meta$humanper *100
 rownames(crc.meta) <- crc.meta$Sample_ID
 
 ## prepare taxonomic data and metabolic data
-load("species.Rdata")
-load("path.Rdata")
+load("20190718_data")
 
 abund.s.CRC <- lapply(all.abund.list.parse, function(data){y <- subset(data, Kingdom %in% "Bacteria"  & is.na(Strain) & !is.na(Species))[,-c(1:7,9)]; rownames(y) <- y$Species;  y <- data[,-1]/100; return(y)})
 
